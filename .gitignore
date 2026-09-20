@@ -1,0 +1,15 @@
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+.kotlin/
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+# İmza anahtarı ve parolaları: asla depoya girmesin
+keystore.properties
+*.jks
+*.keystore
