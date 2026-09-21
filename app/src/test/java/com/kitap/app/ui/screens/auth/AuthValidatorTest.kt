@@ -18,6 +18,8 @@ class AuthValidatorTest {
         assertEquals("Geçerli bir e-posta adresi girin.", AuthValidator.validateRegister("Ayşe", "abc", "s", "s"))
         assertEquals("Şifre gerekli.", AuthValidator.validateRegister("Ayşe", "a@b.com", "", ""))
         assertEquals("Şifreler eşleşmiyor.", AuthValidator.validateRegister("Ayşe", "a@b.com", "s1", "s2"))
+        assertEquals("Lütfen bir okul seçin.", AuthValidator.validateRegister("Ayşe", "a@b.com", "s1", "s1", "  "))
+        assertNull(AuthValidator.validateRegister("Ayşe", "a@b.com", "s1", "s1", "ATATURK_UNIVERSITESI"))
         assertNull(AuthValidator.validateRegister("Ayşe", "a@b.com", "s1", "s1"))
     }
 }

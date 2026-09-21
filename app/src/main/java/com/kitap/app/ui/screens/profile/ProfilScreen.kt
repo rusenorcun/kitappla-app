@@ -20,7 +20,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,7 +38,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -43,6 +48,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kitap.app.data.dto.School
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kitap.app.data.dto.UserDto
@@ -91,7 +97,7 @@ fun ProfilContent(
     onBack: () -> Unit,
     onNameChange: (String) -> Unit,
     onSchoolChange: (String) -> Unit,
-    onAddressChange: (String) -> Unit,
+    onAddressChange: (String) -> Unit = {},
     onPhoneChange: (String) -> Unit,
     onCurrentPasswordChange: (String) -> Unit,
     onNewPasswordChange: (String) -> Unit,
@@ -176,13 +182,36 @@ fun ProfilContent(
                                 modifier = Modifier.fillMaxWidth(),
                             )
 
-                            OutlinedTextField(
-                                value = state.school,
-                                onValueChange = onSchoolChange,
-                                label = { Text("Okul / Üniversite") },
-                                singleLine = true,
+                            var schoolExpanded by remember { mutableStateOf(false) }
+                            ExposedDropdownMenuBox(
+                                expanded = schoolExpanded,
+                                onExpandedChange = { if (!state.savingProfile) schoolExpanded = it },
                                 modifier = Modifier.fillMaxWidth(),
-                            )
+                            ) {
+                                OutlinedTextField(
+                                    value = School.of(state.school)?.label ?: state.school,
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    label = { Text("Okul / Üniversite") },
+                                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = schoolExpanded) },
+                                    enabled = !state.savingProfile,
+                                    modifier = Modifier.fillMaxWidth().menuAnchor(),
+                                )
+                                ExposedDropdownMenu(
+                                    expanded = schoolExpanded,
+                                    onDismissRequest = { schoolExpanded = false },
+                                ) {
+                                    School.entries.forEach { item ->
+                                        DropdownMenuItem(
+                                            text = { Text(item.label) },
+                                            onClick = {
+                                                onSchoolChange(item.name)
+                                                schoolExpanded = false
+                                            },
+                                        )
+                                    }
+                                }
+                            }
 
                             OutlinedTextField(
                                 value = state.phone,
@@ -190,14 +219,7 @@ fun ProfilContent(
                                 label = { Text("Telefon (Buluşma için isteğe bağlı)") },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                                 singleLine = true,
-                                modifier = Modifier.fillMaxWidth(),
-                            )
-
-                            OutlinedTextField(
-                                value = state.address,
-                                onValueChange = onAddressChange,
-                                label = { Text("Genel Bölge / Kampüs") },
-                                singleLine = true,
+                                enabled = !state.savingProfile,
                                 modifier = Modifier.fillMaxWidth(),
                             )
 

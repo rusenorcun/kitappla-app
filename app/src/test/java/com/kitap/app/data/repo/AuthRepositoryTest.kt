@@ -48,7 +48,10 @@ private class FakeAuthApi : AuthApi {
         return loginResponse
     }
 
+    var lastRegisterRequest: RegisterRequest? = null
+
     override suspend fun register(body: RegisterRequest): Response<MeDto> {
+        lastRegisterRequest = body
         loginGate?.await()
         return loginResponse
     }
@@ -155,6 +158,24 @@ class AuthRepositoryTest {
         val r = repo.register("Ayşe", "a@b.com", "sifre")
         assertTrue(r is ApiResult.Success)
         assertTrue(session.state.value is SessionState.Member)
+    }
+
+    @Test
+    fun registerPassesSchoolAndPhone() = runTest {
+        api.loginResponse = FakeAuthApi.ok(admin = false)
+        val r = repo.register(
+            name = "Ahmet",
+            email = "ahmet@atauni.edu.tr",
+            password = "sifre",
+            school = "ATATURK_UNIVERSITESI",
+            phone = "5551234567",
+        )
+        assertTrue(r is ApiResult.Success)
+        val req = api.lastRegisterRequest
+        assertEquals("Ahmet", req?.name)
+        assertEquals("ahmet@atauni.edu.tr", req?.email)
+        assertEquals("ATATURK_UNIVERSITESI", req?.school)
+        assertEquals("5551234567", req?.phone)
     }
 
     @Test

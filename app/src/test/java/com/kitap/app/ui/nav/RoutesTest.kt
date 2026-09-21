@@ -38,6 +38,14 @@ class RoutesTest {
     }
 
     @Test
+    fun ogrenciDogrulamaBuildsPathWithOptionalToken() {
+        assertEquals("profil/ogrenci", Routes.ogrenciDogrulama())
+        assertEquals("profil/ogrenci", Routes.ogrenciDogrulama(null))
+        assertEquals("profil/ogrenci", Routes.ogrenciDogrulama(" "))
+        assertEquals("profil/ogrenci?token=xyz123", Routes.ogrenciDogrulama("xyz123"))
+    }
+
+    @Test
     fun pendingLoginTargetIsKeptWhileMovingWithinAuthFlow() {
         listOf(
             Routes.LOGIN, Routes.REGISTER, Routes.SIFREMI_UNUTTUM, Routes.SIFRE_SIFIRLA, Routes.ADMIN_LOGIN,

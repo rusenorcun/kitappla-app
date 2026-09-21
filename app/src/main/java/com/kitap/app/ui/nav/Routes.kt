@@ -30,6 +30,8 @@ object Routes {
     fun sikayetEt(kind: String, refId: Long) = "sikayet/$kind/$refId"
     const val PROFIL = "profil"
     const val OGRENCI_DOGRULAMA = "profil/ogrenci"
+    const val OGRENCI_DOGRULAMA_PATTERN = "profil/ogrenci?token={token}"
+    fun ogrenciDogrulama(token: String? = null) = if (token.isNullOrBlank()) OGRENCI_DOGRULAMA else "profil/ogrenci?token=$token"
     const val SOHBET = "sohbet/{id}"
     fun sohbet(id: Long) = "sohbet/$id"
     const val SSS = "sss"

@@ -4,11 +4,18 @@ object AuthValidator {
     fun validateLogin(email: String, password: String): String? =
         if (email.isBlank() || password.isBlank()) "E-posta ve şifre gerekli." else null
 
-    fun validateRegister(name: String, email: String, password: String, confirm: String): String? = when {
+    fun validateRegister(
+        name: String,
+        email: String,
+        password: String,
+        confirm: String,
+        school: String? = null,
+    ): String? = when {
         name.isBlank() -> "Ad soyad gerekli."
         !email.trim().contains('@') -> "Geçerli bir e-posta adresi girin."
         password.isBlank() -> "Şifre gerekli."
         password != confirm -> "Şifreler eşleşmiyor."
+        school != null && school.isBlank() -> "Lütfen bir okul seçin."
         else -> null
     }
 }

@@ -1,5 +1,6 @@
 package com.kitap.app.ui.screens.profile
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kitap.app.core.net.ApiResult
@@ -18,9 +19,9 @@ data class OgrenciDogrulamaState(
     val user: UserDto? = null,
     val email: String = "",
     val token: String = "",
+    val isConfirmed: Boolean = false,
     val sendingEmail: Boolean = false,
     val confirmingToken: Boolean = false,
-    val isConfirmed: Boolean = false,
     val verificationSent: Boolean = false,
     val error: String? = null,
     val actionMessage: String? = null,
@@ -29,6 +30,7 @@ data class OgrenciDogrulamaState(
 @HiltViewModel
 class OgrenciDogrulamaViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
+    savedStateHandle: SavedStateHandle? = null,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(OgrenciDogrulamaState())
@@ -37,6 +39,11 @@ class OgrenciDogrulamaViewModel @Inject constructor(
     private var loadJob: Job? = null
 
     init {
+        val initialToken = savedStateHandle?.get<String>("token")
+        if (!initialToken.isNullOrBlank()) {
+            _state.value = _state.value.copy(token = initialToken)
+            confirmToken()
+        }
         load()
     }
 

@@ -49,10 +49,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.kitap.app.core.device.Haptics
 import com.kitap.app.core.device.ShakeEffect
 import com.kitap.app.core.session.SessionState
@@ -140,7 +142,7 @@ fun MemberNavHost(
         }
     }
 
-    LaunchedEffect(session) {
+    LaunchedEffect(session, pendingRoute) {
         if (session is SessionState.Member && pendingRoute != null) {
             navController.navigate(pendingRoute)
             onPendingConsumed()
@@ -271,7 +273,16 @@ fun MemberNavHost(
             composable(Routes.PROFIL) {
                 ProfilScreen(onBack = back)
             }
-            composable(Routes.OGRENCI_DOGRULAMA) {
+            composable(
+                route = Routes.OGRENCI_DOGRULAMA_PATTERN,
+                arguments = listOf(
+                    navArgument("token") {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = null
+                    }
+                ),
+            ) {
                 OgrenciDogrulamaScreen(onBack = back)
             }
             composable(Routes.SOHBET) {
@@ -317,7 +328,9 @@ fun MemberNavHost(
                 val form by vm.form.collectAsStateWithLifecycle()
                 RegisterScreen(
                     form = form,
-                    onSubmit = { name, email, password, confirm -> vm.register(name, email, password, confirm) },
+                    onSubmit = { name, email, password, confirm, school, phone ->
+                        vm.register(name, email, password, confirm, school, phone)
+                    },
                     onNavigateToLogin = { navController.popIfNotRoot() },
                 )
             }

@@ -24,7 +24,15 @@ import com.kitap.app.core.session.SessionState
 fun AppRoot(viewModel: AppViewModel = hiltViewModel()) {
     val session by viewModel.session.collectAsStateWithLifecycle()
     val unread by viewModel.unread.collectAsStateWithLifecycle()
+    val deepLinkRoute by viewModel.deepLinkRoute.collectAsStateWithLifecycle()
     var pendingRoute by rememberSaveable { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(deepLinkRoute) {
+        deepLinkRoute?.let { route ->
+            pendingRoute = route
+            viewModel.clearDeepLink()
+        }
+    }
 
     Box(Modifier.fillMaxSize()) {
         when (val s = session) {

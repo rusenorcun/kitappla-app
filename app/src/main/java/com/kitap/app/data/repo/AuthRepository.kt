@@ -54,10 +54,24 @@ class AuthRepository @Inject constructor(
             }
         }
 
-    suspend fun register(name: String, email: String, password: String): ApiResult<UserDto> =
+    suspend fun register(
+        name: String,
+        email: String,
+        password: String,
+        school: String? = null,
+        phone: String? = null,
+    ): ApiResult<UserDto> =
         withContext(NonCancellable) {
             when (val r = safeApiCall {
-                api.register(RegisterRequest(name = name.trim(), email = email.trim(), password = password))
+                api.register(
+                    RegisterRequest(
+                        name = name.trim(),
+                        email = email.trim(),
+                        password = password,
+                        school = school?.trim()?.ifBlank { null },
+                        phone = phone?.trim()?.ifBlank { null },
+                    )
+                )
             }) {
                 is ApiResult.Failure -> r
                 is ApiResult.Success -> admitOrReject(r.value.user, LoginMode.MEMBER)

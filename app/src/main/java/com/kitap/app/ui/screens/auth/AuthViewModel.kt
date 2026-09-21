@@ -29,13 +29,20 @@ class AuthViewModel @Inject constructor(private val repo: AuthRepository) : View
         submit { repo.login(email, password, mode) }
     }
 
-    fun register(name: String, email: String, password: String, confirm: String) {
-        val problem = AuthValidator.validateRegister(name, email, password, confirm)
+    fun register(
+        name: String,
+        email: String,
+        password: String,
+        confirm: String,
+        school: String = "",
+        phone: String = "",
+    ) {
+        val problem = AuthValidator.validateRegister(name, email, password, confirm, school)
         if (problem != null) {
             _form.value = AuthFormState(error = problem)
             return
         }
-        submit { repo.register(name, email, password) }
+        submit { repo.register(name, email, password, school, phone) }
     }
 
     fun forgotPassword(email: String, onSent: (String) -> Unit) {

@@ -46,6 +46,17 @@ class AppViewModel @Inject constructor(
         viewModelScope.launch { authRepository.logout() }
     }
 
+    private val _deepLinkRoute = MutableStateFlow<String?>(null)
+    val deepLinkRoute: StateFlow<String?> = _deepLinkRoute.asStateFlow()
+
+    fun handleDeepLink(route: String) {
+        _deepLinkRoute.value = route
+    }
+
+    fun clearDeepLink() {
+        _deepLinkRoute.value = null
+    }
+
     private suspend fun fetchUnread(): Long =
         (safeApiCall { notificationApi.notifications() } as? ApiResult.Success)?.value?.unread ?: 0L
 }
