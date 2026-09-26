@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Güvenlik: Oturum anahtarları ve şifreli çerezler yedeğe dahil edilmez -->
+    <exclude domain="sharedpref" path="kitappla_session.xml" />
+</full-backup-content>

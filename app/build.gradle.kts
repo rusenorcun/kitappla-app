@@ -35,11 +35,11 @@ val debugApiBaseUrl: String = ((project.findProperty("apiBaseUrl") as String?) ?
     ?: "http://10.0.2.2:8080/"
 
 android {
-    namespace = "com.kitap.app"
+    namespace = "com.kitappla.app"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.kitap.app"
+        applicationId = "com.kitappla.app"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -66,7 +66,8 @@ android {
             buildConfigField("String", "API_BASE_URL", "\"$debugApiBaseUrl\"")
         }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

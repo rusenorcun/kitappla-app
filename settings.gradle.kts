@@ -18,5 +18,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Kitap"
+rootProject.name = "KitAppLa"
 include(":app")

@@ -1,3 +1,3 @@
 <resources>
-    <style name="Theme.Kitap" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Kitappla" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>
